@@ -7,11 +7,11 @@ import { data } from '../assets/data';
 export default function ExploreScreen({navigation}) {
   return (
     <View style={styles.content}>
-        <ScrollView contentContainerStyle={styles.scrollView}>
-          <SafeAreaView>
-            <Header/>
-            <Grid data = {data}/>
-          </SafeAreaView>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <SafeAreaView>
+          <Header/>
+          <Grid data = {data}/>
+        </SafeAreaView>
       </ScrollView>
     </View>
   )
@@ -25,7 +25,7 @@ const Header = () => {
       </View>
       <Text style={styles.text}>Check out some amazing user submissions addressing the theme of nature! Use the filter options below to sort the images and see if you can find any patterns in how people approach the theme, and click on their image for more info!</Text>
 
-      <View>
+      <View style={styles.card}>
         <Text style={[styles.text, styles.mediumText]}>Sort By:</Text>
         <View style = {styles.flexRow}>
           <Text>Age</Text>
@@ -53,6 +53,9 @@ const styles = StyleSheet.create({
   infoArea: {
     alignItems: 'center',
     padding: '5%'
+  },
+  card: {
+    padding: '2%'
   },
   text: {
     fontFamily: 'Avenir-Roman',
