@@ -8,7 +8,7 @@ export default function ExploreScreen({navigation}) {
   return (
     <View style={styles.content}>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        <SafeAreaView>
+        <SafeAreaView styles={styles.test}>
           <Header/>
           <Grid data = {data}/>
         </SafeAreaView>
@@ -33,7 +33,6 @@ const Header = () => {
           <Text>Place of residence</Text>
         </View>
       </View>
-
     </View>
   )
 }
@@ -52,7 +51,6 @@ const styles = StyleSheet.create({
   },
   infoArea: {
     alignItems: 'center',
-    padding: '5%'
   },
   card: {
     padding: '2%'
@@ -70,7 +68,8 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   scrollView: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginTop: '5%',
   },
   flexRow: {
     flexDirection: 'row'
