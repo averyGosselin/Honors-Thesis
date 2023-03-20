@@ -25,10 +25,10 @@ export default function App() {
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: WHITE,
+            backgroundColor: BLACK,
             height: '10%'
           },
-          tabBarActiveTintColor: BLUE,
+          tabBarActiveTintColor: WHITE,
           tabBarInactiveTintColor: 'gray',
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
