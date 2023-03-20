@@ -133,6 +133,7 @@ const BLACK = '#000000'
 const GREEN = '#809848'
 const BLUE = '#2274A5'
 
+
 //Make the upload box take 2/3 of the screen width and be a nice square
 const WIDTH = Dimensions.get('window').width;
 const BOX_SIZE = WIDTH - Math.floor(WIDTH / 3);

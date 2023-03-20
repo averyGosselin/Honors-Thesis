@@ -1,16 +1,35 @@
 import * as React from 'react';
 import { Text, View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import ImageScreen from './ImageScreen';
 import Grid from '../components/Grid';
 import { data } from '../assets/data';
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+
+const Stack = createNativeStackNavigator();
 
 export default function ExploreScreen({navigation}) {
   return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false
+      }}
+    >
+      <Stack.Screen name="GridScreen" component={GridScreen} />
+      <Stack.Screen name="ImageScreen" component={ImageScreen} />
+    </Stack.Navigator>
+  )
+}
+
+const GridScreen = ( {navigation} ) => {
+  return (
     <View style={styles.content}>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        <SafeAreaView>
+        <SafeAreaView styles={styles.test}>
           <Header/>
-          <Grid data = {data}/>
+          <Grid data = {data} navigation = {navigation} />
         </SafeAreaView>
       </ScrollView>
     </View>
@@ -33,7 +52,6 @@ const Header = () => {
           <Text>Place of residence</Text>
         </View>
       </View>
-
     </View>
   )
 }
@@ -52,7 +70,6 @@ const styles = StyleSheet.create({
   },
   infoArea: {
     alignItems: 'center',
-    padding: '5%'
   },
   card: {
     padding: '2%'
@@ -70,7 +87,8 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   scrollView: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginTop: '5%',
   },
   flexRow: {
     flexDirection: 'row'

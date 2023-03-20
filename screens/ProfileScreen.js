@@ -3,17 +3,17 @@ import { Text, View, SafeAreaView, StyleSheet, TextInput } from 'react-native';
 import FancyButton from '../components/FancyButton'
 import { useState } from 'react'
 
-const alarm = () => {
-  alert("SOUND THE ALARM")
-}
 
 export default function ProfileScreen({navigation}) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loggedIn, setLoggedIn] = useState(false)
 
+  //Verify that user has set username and password before logging them in.
   function setLoggedInTrue(){
-    setLoggedIn(true)
+    ((username != '') && (password != ''))
+    ? setLoggedIn(true)
+    : alert("Must enter username and password")
   }
   function setLoggedInFalse(){
     setLoggedIn(false)
