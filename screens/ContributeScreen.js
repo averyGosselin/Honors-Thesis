@@ -2,8 +2,58 @@ import * as React from 'react';
 import { Text, View, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import FancyButton from '../components/FancyButton';
 
 export default function ContributeScreen({navigation}) {
+  const PREFER_NOT_TO_SAY = "Prefer not to say"
+
+  const ageRanges = [
+    "Under 18",
+    "18 - 24",
+    "25 - 34",
+    "35 - 44",
+    "45 - 54",
+    "55 - 64",
+    "65+",
+    PREFER_NOT_TO_SAY
+  ]
+  const gender = [
+    "Male",
+    "Female",
+    "Other", 
+    PREFER_NOT_TO_SAY
+  ]
+  const ethnicBackground = [
+    "Asian - Eastern",
+    "Asian - Indian", 
+    "Black",
+    "Hispanic",
+    "Native American",
+    "White/Caucasian",
+    PREFER_NOT_TO_SAY
+  ]
+  const placeOfResidence = [
+    "Africa",
+    "Caribbean/Pacific Islands",
+    "Central Asia",
+    "East Asia",
+    "Europe",
+    "Middle East",
+    "North America/Central America",
+    "Oceania",
+    "South America",
+    "South East Asia",
+    PREFER_NOT_TO_SAY
+  ]
+  const educationBackground = [
+    "Some High School",
+    "High School Diploma",
+    "Bachelor's Degree",
+    "Master's Degree",
+    "Ph.D. or higher",
+    PREFER_NOT_TO_SAY
+  ]
+
   return (
     <View style={styles.page}>
       <ScrollView contentContainerStyle={styles.scrollView}>
@@ -16,36 +66,35 @@ export default function ContributeScreen({navigation}) {
             <TouchableOpacity style={styles.imageUploadBox} onPress={notImplementedMessage}>
               <Text style={[styles.text, styles.smallText]}>Press to upload an image</Text>
             </TouchableOpacity>
-            <Text>Please fill out the following fields before submitting:</Text>
-            <InputField question = "Question 1" options = {[1,2,3,5]}/>
-            <InputField question = "Question 2" options = {[1,2,3,5]}/>
-            <InputField question = "Question 3" options = {[1,2,3,5]}/>
-            <InputField question = "Question 3" options = {[1,2,3,5]}/>
-            <SelectDropdown
-              data={['1','2','3']}
-              //style={styles.selector}
-              //dropdownStyle={styles.selector}
-              dropdownBackgroundColor = {WHITE}
-              renderDropdownIcon = {() => {
-                return (
-                  <Ionicons name={'chevron-down-outline'} size={'30px'} color={'grey'} />
-                )
-              }}
-              dropdownIconPosition = {"right"}
-              onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index)
-              }}
-              buttonTextAfterSelection={(selectedItem, index) => {
-                // text represented after item is selected
-                // if data array is an array of objects then return selectedItem.property to render after item is selected
-                return selectedItem
-              }}
-              rowTextForSelection={(item, index) => {
-                // text represented for each item in dropdown
-                // if data array is an array of objects then return item.property to represent item in dropdown
-                return item
-              }}
-            ></SelectDropdown>
+            <Text style={[styles.text, styles.smallText]}>Please fill out the following fields before submitting:</Text>
+
+            <View style={styles.selectionArea}>
+              <MySelectDropdown 
+                options={ageRanges}
+                defaultText="Age Range"
+              />
+              <MySelectDropdown 
+                options={gender}
+                defaultText="Gender Category"
+              />
+              <MySelectDropdown 
+                options={ethnicBackground}
+                defaultText="Ethnic Background"
+              />
+              <MySelectDropdown 
+                options={placeOfResidence}
+                defaultText="Place of Residence"
+              />
+              <MySelectDropdown 
+                options={educationBackground}
+                defaultText="Educational Background"
+              />
+            </View>
+
+            <FancyButton
+                    displayText = "Submit"
+                    onPress = {notImplementedMessage}
+                  />
             {/* <Text style={[styles.text, styles.smallText]}>Select your age range: </Text>
             <Text style={[styles.text, styles.smallText]}>Select what best categorizes your gender identity: </Text>
             <Text style={[styles.text, styles.smallText]}>Select what best categorizes your ethnic background:</Text>
@@ -138,9 +187,57 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 5
   },
-  selector: {
+  selectionArea: {
+    height: 300,
+    justifyContent: "space-around"
+  },
+  dropdown1BtnStyle: {
+    width: '75%',
+    height: 50,
     backgroundColor: WHITE,
-
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "black"
+  },
+  dropdown1BtnTxtStyle: {
+    color: BLACK,
+    fontSize: 15, 
+    textAlign: 'left',
+    fontFamily: 'Avenir-Roman',
+  },
+  dropdown1RowStyle: {
+    backgroundColor: WHITE, 
+    borderBottomColor: PLATINUM,
   }
 });
 
+
+
+function MySelectDropdown(props) {
+
+  return (
+    <SelectDropdown
+      data={props.options}
+      defaultButtonText={props.defaultText}
+      buttonStyle={styles.dropdown1BtnStyle}
+      buttonTextStyle={styles.dropdown1BtnTxtStyle}
+      rowStyle={styles.dropdown1RowStyle}
+      dropdownIconPosition = {"right"}
+
+      renderDropdownIcon = {isOpened => {
+        return (
+          <Ionicons name={isOpened ? 'chevron-up-outline' : 'chevron-down-outline'} size={'30px'} color={'grey'} />
+        )
+      }}
+      onSelect={(selectedItem, index) => {
+        console.log(selectedItem, index)
+      }}
+      buttonTextAfterSelection={(selectedItem, index) => {
+        return selectedItem
+      }}
+      rowTextForSelection={(item, index) => {
+        return item
+      }}
+      ></SelectDropdown>
+  )
+}
