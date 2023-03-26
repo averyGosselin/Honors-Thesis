@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Text, View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import ImageScreen from './ImageScreen';
 import Grid from '../components/Grid';
-import { data } from '../assets/data';
+import { data } from '../assets/natureData';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
