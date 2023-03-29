@@ -1,23 +1,50 @@
 import * as React from 'react';
 import { Text, View, SafeAreaView, StyleSheet, TextInput } from 'react-native';
 import FancyButton from '../components/FancyButton'
+// import firebase from "firebase"
 import { useState } from 'react'
 
 
 export default function ProfileScreen({navigation}) {
-  const [username, setUsername] = useState('')
+  const [email, setemail] = useState('')
   const [password, setPassword] = useState('')
   const [loggedIn, setLoggedIn] = useState(false)
 
-  //Verify that user has set username and password before logging them in.
+  //Verify that user has set email and password before logging them in.
   function setLoggedInTrue(){
-    ((username != '') && (password != ''))
+    ((email != '') && (password != ''))
     ? setLoggedIn(true)
-    : alert("Must enter username and password")
+    : alert("Must enter email and password")
   }
   function setLoggedInFalse(){
     setLoggedIn(false)
   }
+
+  // const logInUser = () => {
+  //   firebase.auth().signInWithEmailAndPassword( email, password).then(
+  //     () => {
+  //       //returning user
+  //       setLoggedInTrue()
+  //       alert("welcome!")
+  //     }
+  //   ).catch(
+  //     () => {
+  //       firebase.auth().createUserWithEmailAndPassword( email, password ).then(
+  //         () => {
+  //           //new user
+  //           setLoggedInTrue()
+  //           alert("welcome!")
+  //         }
+  //       ).catch(
+  //         () => {
+  //           //bad user
+  //           firebase.auth().signOut();
+  //           alert("EPIC FAILLLL")
+  //         }
+  //       )
+  //     }
+  //   )
+  // }
 
   return (
     <View style={styles.page}>
@@ -31,9 +58,9 @@ export default function ProfileScreen({navigation}) {
                 <View style={styles.loginArea}>
                   <Text style={[styles.text, styles.mediumText]}>Log in to manage your account</Text>
                   <InputField 
-                    placeholder = "Enter Your Username"
-                    changeValue = {username}
-                    changeFunction = {setUsername}
+                    placeholder = "Enter Your Email"
+                    changeValue = {email}
+                    changeFunction = {setemail}
                     secureTextEntry = {false}
                   />
                   <InputField
@@ -73,7 +100,7 @@ function InputField(props) {
       style = {styles.input}
       placeholder = {props.placeholder}
       value = { props.changeValue }
-      onChangeText = { newUsername => props.changeFunction(newUsername) }
+      onChangeText = { newemail => props.changeFunction(newemail) }
     />
   )
 }
