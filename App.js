@@ -3,10 +3,18 @@ import ExploreScreen from './screens/ExploreScreen';
 import ContributeScreen from './screens/ContributeScreen';
 import ProfileScreen from './screens/ProfileScreen';
 
+import firebase from "firebase/compat/app"
+import "firebase/compat/auth"
+import firebaseConfiguration from './secret';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+import { initializeApp } from "firebase/app";
+
+if (!firebase.apps.length) firebase.initializeApp( firebaseConfiguration );
 
 const Tab = createBottomTabNavigator();
 

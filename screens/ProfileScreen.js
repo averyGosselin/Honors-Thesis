@@ -3,20 +3,51 @@ import { Text, View, SafeAreaView, StyleSheet, TextInput } from 'react-native';
 import FancyButton from '../components/FancyButton'
 import { useState } from 'react'
 
+import firebase from "firebase/compat/app"
+import "firebase/compat/auth"
+
 
 export default function ProfileScreen({navigation}) {
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loggedIn, setLoggedIn] = useState(false)
 
-  //Verify that user has set username and password before logging them in.
+  //Verify that user has set email and password before logging them in.
   function setLoggedInTrue(){
-    ((username != '') && (password != ''))
+    ((email != '') && (password != ''))
     ? setLoggedIn(true)
-    : alert("Must enter username and password")
+    : alert("Must enter email and password")
   }
   function setLoggedInFalse(){
     setLoggedIn(false)
+  }
+
+  const logInUser = () => {
+    firebase.auth().signInWithEmailAndPassword( email, password )
+      .then(
+        () => {
+          //return user
+          alert("Welcome back!")
+          setLoggedIn(true)
+        }
+      ).catch(
+        () => {
+          firebase.auth().createUserWithEmailAndPassword( email, password )
+          .then(
+            () => {
+              //new user
+              alert("Welcome, newcomer!")
+              setLoggedIn(true)
+            }
+          ).catch(
+            () => {
+              //bad user!!
+              alert("That didnt work")
+              firebase.auth().signOut()
+            }
+          )
+        }
+      )
   }
 
   return (
@@ -31,9 +62,9 @@ export default function ProfileScreen({navigation}) {
                 <View style={styles.loginArea}>
                   <Text style={[styles.text, styles.mediumText]}>Log in to manage your account</Text>
                   <InputField 
-                    placeholder = "Enter Your Username"
-                    changeValue = {username}
-                    changeFunction = {setUsername}
+                    placeholder = "Enter Your email"
+                    changeValue = {email}
+                    changeFunction = {setEmail}
                     secureTextEntry = {false}
                   />
                   <InputField
@@ -44,7 +75,7 @@ export default function ProfileScreen({navigation}) {
                   />
                   <FancyButton
                     displayText = "Log in"
-                    onPress = {setLoggedInTrue}
+                    onPress = {logInUser}
                   />
                 </View>
               :
@@ -73,7 +104,7 @@ function InputField(props) {
       style = {styles.input}
       placeholder = {props.placeholder}
       value = { props.changeValue }
-      onChangeText = { newUsername => props.changeFunction(newUsername) }
+      onChangeText = { newEmail => props.changeFunction(newEmail) }
     />
   )
 }
