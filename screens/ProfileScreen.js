@@ -4,9 +4,12 @@ import FancyButton from '../components/FancyButton'
 // import firebase from "firebase"
 import { useState } from 'react'
 
+import firebase from "firebase/compat/app"
+import "firebase/compat/auth"
+
 
 export default function ProfileScreen({navigation}) {
-  const [email, setemail] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loggedIn, setLoggedIn] = useState(false)
 
@@ -20,31 +23,59 @@ export default function ProfileScreen({navigation}) {
     setLoggedIn(false)
   }
 
-  // const logInUser = () => {
-  //   firebase.auth().signInWithEmailAndPassword( email, password).then(
-  //     () => {
-  //       //returning user
-  //       setLoggedInTrue()
-  //       alert("welcome!")
-  //     }
-  //   ).catch(
-  //     () => {
-  //       firebase.auth().createUserWithEmailAndPassword( email, password ).then(
-  //         () => {
-  //           //new user
-  //           setLoggedInTrue()
-  //           alert("welcome!")
-  //         }
-  //       ).catch(
-  //         () => {
-  //           //bad user
-  //           firebase.auth().signOut();
-  //           alert("EPIC FAILLLL")
-  //         }
-  //       )
-  //     }
-  //   )
-  // }
+  const logInUser = () => {
+    firebase.auth().signInWithEmailAndPassword( email, password )
+      .then(
+        () => {
+          //return user
+          alert("Welcome back!")
+          setLoggedIn(true)
+        }
+      ).catch(
+        () => {
+          firebase.auth().createUserWithEmailAndPassword( email, password )
+          .then(
+            () => {
+              //new user
+              alert("Welcome, newcomer!")
+              setLoggedIn(true)
+            }
+          ).catch(
+            () => {
+              //bad user!!
+              alert("That didnt work")
+              firebase.auth().signOut()
+            }
+          )
+        }
+      )
+  }
+  
+  const logInUser = () => {
+    firebase.auth().signInWithEmailAndPassword( email, password).then(
+       () => {
+         //returning user
+         setLoggedInTrue()
+         alert("welcome!")
+       }
+     ).catch(
+       () => {
+         firebase.auth().createUserWithEmailAndPassword( email, password ).then(
+           () => {
+             //new user
+             setLoggedInTrue()
+             alert("welcome!")
+           }
+         ).catch(
+           () => {
+             //bad user
+             firebase.auth().signOut();
+             alert("EPIC FAILLLL")
+           }
+         )
+       }
+     )
+   }
 
   return (
     <View style={styles.page}>
@@ -58,9 +89,9 @@ export default function ProfileScreen({navigation}) {
                 <View style={styles.loginArea}>
                   <Text style={[styles.text, styles.mediumText]}>Log in to manage your account</Text>
                   <InputField 
-                    placeholder = "Enter Your Email"
+                    placeholder = "Enter Your email"
                     changeValue = {email}
-                    changeFunction = {setemail}
+                    changeFunction = {setEmail}
                     secureTextEntry = {false}
                   />
                   <InputField
@@ -71,7 +102,7 @@ export default function ProfileScreen({navigation}) {
                   />
                   <FancyButton
                     displayText = "Log in"
-                    onPress = {setLoggedInTrue}
+                    onPress = {logInUser}
                   />
                 </View>
               :
@@ -100,7 +131,7 @@ function InputField(props) {
       style = {styles.input}
       placeholder = {props.placeholder}
       value = { props.changeValue }
-      onChangeText = { newemail => props.changeFunction(newemail) }
+      onChangeText = { newEmail => props.changeFunction(newEmail) }
     />
   )
 }
