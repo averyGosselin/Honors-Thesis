@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Text, View, SafeAreaView, StyleSheet, TextInput } from 'react-native';
 import FancyButton from '../components/FancyButton'
+// import firebase from "firebase"
 import { useState } from 'react'
 
 import firebase from "firebase/compat/app"
@@ -49,6 +50,32 @@ export default function ProfileScreen({navigation}) {
         }
       )
   }
+  
+  const logInUser = () => {
+    firebase.auth().signInWithEmailAndPassword( email, password).then(
+       () => {
+         //returning user
+         setLoggedInTrue()
+         alert("welcome!")
+       }
+     ).catch(
+       () => {
+         firebase.auth().createUserWithEmailAndPassword( email, password ).then(
+           () => {
+             //new user
+             setLoggedInTrue()
+             alert("welcome!")
+           }
+         ).catch(
+           () => {
+             //bad user
+             firebase.auth().signOut();
+             alert("EPIC FAILLLL")
+           }
+         )
+       }
+     )
+   }
 
   return (
     <View style={styles.page}>

@@ -5,20 +5,21 @@ import { View, StyleSheet, ImageBackground, Dimensions, TouchableOpacity } from 
 function ImageGrid(props){
 
   return props.data.map(submission =>
+    // Add: image explanation/rationale, genderExplanation, ethnicityExplanation, educationLevel
     <TouchableOpacity onPress={() => 
       props.navigation.navigate('ImageScreen',
        {
-        url: submission.url,
-        date: submission.date,
-        age: submission.submitter_user.age_range,
-        gender: submission.submitter_user.gender_identity,
-        ethnicity: submission.submitter_user.ethnic_background,
-        placeOfOrigin: submission.submitter_user.place_of_origin,
-        placeOfResidence: submission.submitter_user.place_of_residence
+        url: submission.inAppUrl,
+        // date: submission.date,
+        age: submission.ageRange,
+        gender: submission.genderIdentity,
+        ethnicity: submission.ethnicBackground,
+        placeOfOrigin: submission.residence,
+        // placeOfResidence: submission.submitter_user.place_of_residence
        }
       )
     }>
-      <ImageBackground source = {submission.url}>
+      <ImageBackground source = {submission.inAppUrl}>
         <View style={styles.box}/>
       </ImageBackground>
     </TouchableOpacity>
