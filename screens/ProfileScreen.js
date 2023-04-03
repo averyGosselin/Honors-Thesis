@@ -1,17 +1,19 @@
 import * as React from 'react';
-import { Text, View, SafeAreaView, StyleSheet, TextInput } from 'react-native';
+import { Text, View, SafeAreaView, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
 import FancyButton from '../components/FancyButton'
 // import firebase from "firebase"
 import { useState } from 'react'
 
 import firebase from "firebase/compat/app"
 import "firebase/compat/auth"
+import Spinner from '../components/Spinner';
 
 
 export default function ProfileScreen({navigation}) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loggedIn, setLoggedIn] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   //Verify that user has set email and password before logging them in.
   function setLoggedInTrue(){
@@ -24,11 +26,11 @@ export default function ProfileScreen({navigation}) {
   }
 
   const logInUser = () => {
+    showLoading()
     firebase.auth().signInWithEmailAndPassword( email, password )
       .then(
         () => {
           //return user
-          alert("Welcome back!")
           setLoggedIn(true)
         }
       ).catch(
@@ -37,45 +39,25 @@ export default function ProfileScreen({navigation}) {
           .then(
             () => {
               //new user
-              alert("Welcome, newcomer!")
               setLoggedIn(true)
             }
           ).catch(
             () => {
               //bad user!!
-              alert("That didnt work")
               firebase.auth().signOut()
             }
           )
         }
       )
+    hideLoading()
   }
-  
-  const logInUser = () => {
-    firebase.auth().signInWithEmailAndPassword( email, password).then(
-       () => {
-         //returning user
-         setLoggedInTrue()
-         alert("welcome!")
-       }
-     ).catch(
-       () => {
-         firebase.auth().createUserWithEmailAndPassword( email, password ).then(
-           () => {
-             //new user
-             setLoggedInTrue()
-             alert("welcome!")
-           }
-         ).catch(
-           () => {
-             //bad user
-             firebase.auth().signOut();
-             alert("EPIC FAILLLL")
-           }
-         )
-       }
-     )
-   }
+
+  const showLoading = () => {
+    setIsLoading(true)
+  }
+  const hideLoading = () => {
+    setIsLoading(false)
+  }
 
   return (
     <View style={styles.page}>
@@ -83,40 +65,42 @@ export default function ProfileScreen({navigation}) {
         <View style={styles.content}>
           <Text style={[styles.text, styles.bigText]}>Profile Page</Text>
           <View style={styles.displayWrapper}>
-            {
-              !loggedIn
-              ?
-                <View style={styles.loginArea}>
-                  <Text style={[styles.text, styles.mediumText]}>Log in to manage your account</Text>
-                  <InputField 
-                    placeholder = "Enter Your email"
-                    changeValue = {email}
-                    changeFunction = {setEmail}
-                    secureTextEntry = {false}
-                  />
-                  <InputField
-                    placeholder = "Enter Your Password"
-                    changeValue = {password}
-                    changeFunction = {setPassword}
-                    secureTextEntry = {true}
-                  />
-                  <FancyButton
-                    displayText = "Log in"
-                    onPress = {logInUser}
-                  />
-                </View>
-              :
-                <View>
-                  <Text styles={[styles.text, styles.mediumText]}>
-                    You are now logged in!
-                  </Text>
-                  <FancyButton
-                    displayText = "Log out"
-                    onPress = {setLoggedInFalse}
-                  />
-                </View>
-            }
-
+          {
+            !isLoading ?
+                !loggedIn
+                ?
+                  <View style={styles.loginArea}>
+                    <Text style={[styles.text, styles.mediumText]}>Log in to manage your account</Text>
+                    <InputField 
+                      placeholder = "Enter Your email"
+                      changeValue = {email}
+                      changeFunction = {setEmail}
+                      secureTextEntry = {false}
+                    />
+                    <InputField
+                      placeholder = "Enter Your Password"
+                      changeValue = {password}
+                      changeFunction = {setPassword}
+                      secureTextEntry = {true}
+                    />
+                    <FancyButton
+                      displayText = "Log in"
+                      onPress = {logInUser}
+                    />
+                  </View>
+                :
+                  <View>
+                    <Text styles={[styles.text, styles.mediumText]}>
+                      You are now logged in!
+                    </Text>
+                    <FancyButton
+                      displayText = "Log out"
+                      onPress = {setLoggedInFalse}
+                    />
+                  </View>
+            :
+            <Spinner size='large' color='#809848'/>
+          }
           </View>
         </View>
       </SafeAreaView>
