@@ -3,8 +3,34 @@ import { Text, View, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Dim
 import SelectDropdown from 'react-native-select-dropdown'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FancyButton from '../components/FancyButton';
+import { useState } from 'react';
+
+import firebase from "firebase/compat/app"
 
 export default function ContributeScreen({navigation}) {
+  const [ userAgeRange, setUserAgeRange ] = useState(null)
+  const [ userGender, setUserGender ] = useState(null)
+  const [ userEthnicBackground, setUserEthnicBackground ] = useState(null)
+  const [ userPlaceOfResidence, setUserPlaceOfResidence] = useState(null)
+  const [ userEducationBackground, setUserEducationBackground ] = useState(null)
+
+  const updateAgeRange = (age) => {
+    setUserAgeRange(age)
+  }
+  const updateUserGender = (gender) => {
+    setUserGender(gender)
+  }
+  const updateUserEthnicBackground = (ethncicBackground) => {
+    setUserEthnicBackground(ethncicBackground)
+  }
+  const updateUserPlaceOfResidence = (placeOfResidence) => {
+    setUserPlaceOfResidence(placeOfResidence)
+  }
+  const updateUserEducationBackground = (educationBackground) => {
+    setUserEducationBackground(educationBackground)
+  }
+  
+
   const PREFER_NOT_TO_SAY = "Prefer not to say"
 
   const ageRanges = [
@@ -54,6 +80,40 @@ export default function ContributeScreen({navigation}) {
     PREFER_NOT_TO_SAY
   ]
 
+  const pushRecord = () => {
+    if (userAgeRange != null && userGender != null && userEthnicBackground != null && userPlaceOfResidence != null && userEducationBackground != null) {
+      console.log(
+        userAgeRange,
+        userGender,
+        userEthnicBackground,
+        userPlaceOfResidence,
+        userEducationBackground
+      )
+      firebase.database().ref("testPushes").push(
+        {
+          userAgeRange,
+          userGender,
+          userEthnicBackground,
+          userPlaceOfResidence,
+          userEducationBackground
+        }
+      )
+      .then(
+        data => {
+          //Sucesss
+          alert(`Record Added!`);
+        }
+      )
+      .catch(
+        error => {
+          //failure
+          alert(`There was a problem adding your record: ${error}`);
+        }
+      )} else {
+      alert("give more data!")
+    }
+  }
+
   return (
     <View style={styles.page}>
       <ScrollView contentContainerStyle={styles.scrollView}>
@@ -72,29 +132,36 @@ export default function ContributeScreen({navigation}) {
               <MySelectDropdown 
                 options={ageRanges}
                 defaultText="Age Range"
+                onSelect={updateAgeRange}
               />
               <MySelectDropdown 
                 options={gender}
                 defaultText="Gender Category"
+                onSelect={updateUserGender}
               />
               <MySelectDropdown 
                 options={ethnicBackground}
                 defaultText="Ethnic Background"
+                onSelect={updateUserEthnicBackground}
               />
               <MySelectDropdown 
                 options={placeOfResidence}
                 defaultText="Place of Residence"
+                onSelect={updateUserPlaceOfResidence}
               />
               <MySelectDropdown 
                 options={educationBackground}
                 defaultText="Educational Background"
+                onSelect={updateUserEducationBackground}
               />
             </View>
 
             <FancyButton
-                    displayText = "Submit"
-                    onPress = {notImplementedMessage}
-                  />
+              displayText = "Submit"
+              onPress = {
+                pushRecord
+              }
+            />
             {/* <Text style={[styles.text, styles.smallText]}>Select your age range: </Text>
             <Text style={[styles.text, styles.smallText]}>Select what best categorizes your gender identity: </Text>
             <Text style={[styles.text, styles.smallText]}>Select what best categorizes your ethnic background:</Text>
@@ -231,7 +298,7 @@ function MySelectDropdown(props) {
         )
       }}
       onSelect={(selectedItem, index) => {
-        console.log(selectedItem, index)
+        props.onSelect(selectedItem)
       }}
       buttonTextAfterSelection={(selectedItem, index) => {
         return selectedItem
