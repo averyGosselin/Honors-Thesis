@@ -1,13 +1,22 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { useState } from 'react';
+import { Text, View, StyleSheet, SafeAreaView, ScrollView, Dimensions } from 'react-native';
+
 import SelectDropdown from 'react-native-select-dropdown'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FancyButton from '../components/FancyButton';
-import { useState } from 'react';
 
 import firebase from "firebase/compat/app"
 
+//Used for driving the image upload functionality
+import UploadingData from '../components/UploadingData';
+import ImageUpload from '../components/ImageUpload';
+
+
 export default function ContributeScreen({navigation}) {
+  const [ image, setImage ] = useState(null)
+  const [ uploading, setUploading ] = useState(false)
+
   const [ userAgeRange, setUserAgeRange ] = useState(null)
   const [ userGender, setUserGender ] = useState(null)
   const [ userEthnicBackground, setUserEthnicBackground ] = useState(null)
@@ -30,9 +39,8 @@ export default function ContributeScreen({navigation}) {
     setUserEducationBackground(educationBackground)
   }
   
-
+  //TODO: move these to another file and import to clean this file up
   const PREFER_NOT_TO_SAY = "Prefer not to say"
-
   const ageRanges = [
     "Under 18",
     "18 - 24",
@@ -80,41 +88,74 @@ export default function ContributeScreen({navigation}) {
     PREFER_NOT_TO_SAY
   ]
 
+  //Function to push data recorded in the form to firebase realtime db (json) and storage (images)
   const pushRecord = () => {
-    if (userAgeRange != null && userGender != null && userEthnicBackground != null && userPlaceOfResidence != null && userEducationBackground != null) {
-      console.log(
-        userAgeRange,
-        userGender,
-        userEthnicBackground,
-        userPlaceOfResidence,
-        userEducationBackground
-      )
+    //Require all fields be filled with some value 
+    if (image != null && userAgeRange != null && userGender != null && userEthnicBackground != null && userPlaceOfResidence != null && userEducationBackground != null) {
+      //pull out the image url to store in the json and be able to connect them later
+      const url = image.uri.substring(image.uri.lastIndexOf('/')+1)
       firebase.database().ref("testPushes").push(
         {
           userAgeRange,
           userGender,
           userEthnicBackground,
           userPlaceOfResidence,
-          userEducationBackground
+          userEducationBackground,
+          url
         }
-      )
-      .then(
+      ).then(
         data => {
-          //Sucesss
-          alert(`Record Added!`);
+          //Sucess
+          //If we have successfully pushed the data, then we also push the image
+          // TODO: is there a better place to put this?
+          uploadImage()
         }
-      )
-      .catch(
+      ).catch(
         error => {
           //failure
           alert(`There was a problem adding your record: ${error}`);
         }
-      )} else {
+      )
+      //reset all given data so when we come back to this screen nothing is filled out and we can fully restart
+      setUserAgeRange(null)
+      setUserGender(null)
+      setUserEthnicBackground(null)
+      setUserPlaceOfResidence(null)
+      setUserEducationBackground(null)
+
+    } else {
+      //Some field hasnt been filled out, so we make demands!
       alert("give more data!")
     }
-  }
+    }
+
+  //function specific to pushing image to firebase storage
+  const uploadImage = async () => {
+    //This will display the uploading screen and make this page look less weird while it uploads
+    setUploading(true)
+
+    //need to wait for these things or weird things happen
+    const response = await fetch(image.uri)
+    const blob = await response.blob()
+
+    const filename = image.uri.substring(image.uri.lastIndexOf('/')+1)
+    var ref = firebase.storage().ref().child(filename).put(blob)
+    try {
+      await ref;
+      alert("Success! Your submission has been uploaded, thanks!")
+    } catch (e){
+        console.log(e)
+    }
+    //reset so contribute page comes back up, clear of all previously submitted data
+    setUploading(false)
+    setImage(null);
+  } 
+
 
   return (
+    uploading ?
+      <UploadingData/>
+    :
     <View style={styles.page}>
       <ScrollView contentContainerStyle={styles.scrollView}>
       <SafeAreaView>
@@ -123,9 +164,10 @@ export default function ContributeScreen({navigation}) {
 
           <View style={styles.submissionForm}>
             <Text style={[styles.text, styles.smallText]}>Please upload an image relating to the theme of nature and fill in the following data fields.</Text>
-            <TouchableOpacity style={styles.imageUploadBox} onPress={notImplementedMessage}>
-              <Text style={[styles.text, styles.smallText]}>Press to upload an image</Text>
-            </TouchableOpacity>
+            <ImageUpload
+              image = {image}
+              setter = {setImage}
+            />
             <Text style={[styles.text, styles.smallText]}>Please fill out the following fields before submitting:</Text>
 
             <View style={styles.selectionArea}>
@@ -162,13 +204,7 @@ export default function ContributeScreen({navigation}) {
                 pushRecord
               }
             />
-            {/* <Text style={[styles.text, styles.smallText]}>Select your age range: </Text>
-            <Text style={[styles.text, styles.smallText]}>Select what best categorizes your gender identity: </Text>
-            <Text style={[styles.text, styles.smallText]}>Select what best categorizes your ethnic background:</Text>
-            <Text style={[styles.text, styles.smallText]}>Select the region you were born in: </Text>
-            <Text style={[styles.text, styles.smallText]}>Select the region you currently live in: </Text> */}
           </View>
-
         </View>
       </SafeAreaView>
       </ScrollView>
@@ -176,22 +212,6 @@ export default function ContributeScreen({navigation}) {
   )
 }
 
-const InputField = ({question, options}) => {
-  let optionList = options.map(option =>
-    <Text>{option}</Text>
-  )
-
-  return (
-    <View style={styles.inputField}>
-      <Text style={[styles.text, styles.smallText]}>{question}</Text>
-      {/* {optionList} */}
-    </View>
-  )
-}
-
-function notImplementedMessage(){
-  alert("That isn't implemented yet!")
-}
 
 //Theme constants
 const WHITE = '#FCFAFA'
@@ -199,11 +219,6 @@ const PLATINUM = '#CED8DF'
 const BLACK = '#000000'
 const GREEN = '#809848'
 const BLUE = '#2274A5'
-
-
-//Make the upload box take 2/3 of the screen width and be a nice square
-const WIDTH = Dimensions.get('window').width;
-const BOX_SIZE = WIDTH - Math.floor(WIDTH / 3);
 
 const styles = StyleSheet.create({
   page: {
@@ -217,16 +232,6 @@ const styles = StyleSheet.create({
     width: '90%',
     justifyContent: 'space-between',
     alignItems: 'center'
-  },
-  imageUploadBox: {
-    width: BOX_SIZE,
-    height: BOX_SIZE,
-    borderWidth: 1,
-    borderRadius: 10,
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 10
   },
   text: {
     fontFamily: 'Avenir-Roman',
@@ -247,13 +252,6 @@ const styles = StyleSheet.create({
   },
   flexRow: {
     flexDirection: 'row'
-  },
-  inputField: {
-    margin: 10,
-    backgroundColor: WHITE,
-    width: '75%',
-    borderRadius: 10,
-    padding: 5
   },
   selectionArea: {
     height: 300,
