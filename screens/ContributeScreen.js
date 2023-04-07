@@ -156,59 +156,58 @@ export default function ContributeScreen({navigation}) {
     uploading ?
       <UploadingData/>
     :
-    <View style={styles.page}>
-      <ScrollView contentContainerStyle={styles.scrollView}>
-      <SafeAreaView>
-        <View style={styles.content}>
-          <Text style={[styles.text, styles.bigText]}>Submit an Image</Text>
+      // CREDIT: outer 3 wrappers informed by ChatGPT response to message:
+      //  "write a functional react native component the encodes a screen that will be able to scroll if there is enough content on it and is a safeAreaView. style it using the react Stylesheet library"
+      // Modified to meet content needs.
+      <SafeAreaView style={styles.page}>
+        <ScrollView>
+          <View style={styles.content}>
+            <Text style={[styles.text, styles.bigText]}>Submit an Image</Text>
 
-          <View style={styles.submissionForm}>
-            <Text style={[styles.text, styles.smallText]}>Please upload an image relating to the theme of nature and fill in the following data fields.</Text>
-            <ImageUpload
-              image = {image}
-              setter = {setImage}
-            />
-            <Text style={[styles.text, styles.smallText]}>Please fill out the following fields before submitting:</Text>
+            <View style={styles.submissionForm}>
+              <Text style={[styles.text, styles.smallText]}>Please upload an image relating to the theme of nature and fill in the following data fields.</Text>
+              <ImageUpload
+                image = {image}
+                setter = {setImage}
+              />
+              <Text style={[styles.text, styles.smallText]}>Please fill out the following fields before submitting:</Text>
 
-            <View style={styles.selectionArea}>
-              <MySelectDropdown 
-                options={ageRanges}
-                defaultText="Age Range"
-                onSelect={updateAgeRange}
-              />
-              <MySelectDropdown 
-                options={gender}
-                defaultText="Gender Category"
-                onSelect={updateUserGender}
-              />
-              <MySelectDropdown 
-                options={ethnicBackground}
-                defaultText="Ethnic Background"
-                onSelect={updateUserEthnicBackground}
-              />
-              <MySelectDropdown 
-                options={placeOfResidence}
-                defaultText="Place of Residence"
-                onSelect={updateUserPlaceOfResidence}
-              />
-              <MySelectDropdown 
-                options={educationBackground}
-                defaultText="Educational Background"
-                onSelect={updateUserEducationBackground}
+              <View style={styles.selectionArea}>
+                <MySelectDropdown 
+                  options={ageRanges}
+                  defaultText="Age Range"
+                  onSelect={updateAgeRange}
+                />
+                <MySelectDropdown 
+                  options={gender}
+                  defaultText="Gender Category"
+                  onSelect={updateUserGender}
+                />
+                <MySelectDropdown 
+                  options={ethnicBackground}
+                  defaultText="Ethnic Background"
+                  onSelect={updateUserEthnicBackground}
+                />
+                <MySelectDropdown 
+                  options={placeOfResidence}
+                  defaultText="Place of Residence"
+                  onSelect={updateUserPlaceOfResidence}
+                />
+                <MySelectDropdown 
+                  options={educationBackground}
+                  defaultText="Educational Background"
+                  onSelect={updateUserEducationBackground}
+                />
+              </View>
+
+              <FancyButton
+                displayText = "Submit"
+                onPress = {pushRecord}
               />
             </View>
-
-            <FancyButton
-              displayText = "Submit"
-              onPress = {
-                pushRecord
-              }
-            />
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
-      </ScrollView>
-    </View>
   )
 }
 
@@ -260,7 +259,7 @@ const styles = StyleSheet.create({
   dropdown1BtnStyle: {
     width: '75%',
     height: 50,
-    backgroundColor: WHITE,
+    backgroundColor: PLATINUM,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "black"

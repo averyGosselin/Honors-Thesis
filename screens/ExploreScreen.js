@@ -25,14 +25,17 @@ export default function ExploreScreen({navigation}) {
 
 const GridScreen = ( {navigation} ) => {
   return (
-    <View style={styles.content}>
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        <SafeAreaView styles={styles.test}>
+    // CREDIT: informed by ChatGPT response to message:
+    //  "write a functional react native component the encodes a screen that will be able to scroll if there is enough content on it and is a safeAreaView. style it using the react Stylesheet library"
+    // Modified to meet content needs.
+    <SafeAreaView style={styles.page}>
+      <ScrollView>
+        <View style={styles.content}>
           <Header/>
           <Grid data = {data} navigation = {navigation} />
-        </SafeAreaView>
+        </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -64,9 +67,12 @@ const GREEN = '#809848'
 const BLUE = '#2274A5'
 
 const styles = StyleSheet.create({
-  content: {
+  page: {
     backgroundColor: PLATINUM,
     flex: 1,
+  },
+  content: {
+    alignItems: 'center',
   },
   infoArea: {
     alignItems: 'center',
@@ -85,10 +91,6 @@ const styles = StyleSheet.create({
   },
   mediumText: {
     fontSize: 20
-  },
-  scrollView: {
-    flexGrow: 1,
-    marginTop: '5%',
   },
   flexRow: {
     flexDirection: 'row'
