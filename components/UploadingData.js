@@ -7,6 +7,7 @@ export default function UploadingData() {
     return (
         <View style={styles.content}>
             <Text style={[styles.text, styles.bigText]}>Uploading...</Text>
+            <Text style={[styles.text, styles.verySmallText]}>Maybe even quickly..</Text>
             <Spinner 
                 size='large' 
                 color='#809848'
@@ -35,6 +36,10 @@ const styles = StyleSheet.create({
     bigText: {
         fontSize: 30,
         fontWeight: 'bold',
-        padding: '5%'
+        // padding: '5%'
+    },
+    verySmallText: {
+        fontSize: 10,
+        paddingBottom: '5%'
     },
 })

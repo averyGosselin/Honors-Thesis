@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, SafeAreaView, StyleSheet, Image } from 'react-native';
+import { Text, View, SafeAreaView, StyleSheet, Image, ScrollView } from 'react-native';
 import FancyButton from '../components/FancyButton';
 
 export default function ImageScreen({route, navigation}) {
@@ -15,34 +15,27 @@ export default function ImageScreen({route, navigation}) {
     const placeOfResidence = routeData.placeOfResidence
 
     return (
-        // <SafeAreaView style={styles.page}>
-        //     <View style={styles.content}>
-        //         <Image source = {url} style={styles.image}/>
-        //         <FancyButton 
-        //             displayText = "Go Back"
-        //             onPress = {navigation.goBack}
-        //         />
-        //     </View>
-        // </SafeAreaView>
-
-        <View style={styles.page}>
-            <SafeAreaView>
-                <View style={styles.content}>
-                    <Text style={[styles.text, styles.bigText]}>Image Page</Text>
-                    <Image source = {url} style={styles.image}/>
-                    <Text style={[styles.text, styles.mediumText]}>Date: {date}</Text>
-                    <Text style={[styles.text, styles.mediumText]}>Submitter Age Range: {age}</Text>
-                    <Text style={[styles.text, styles.mediumText]}>Submitter Gender Identity: {gender}</Text>
-                    <Text style={[styles.text, styles.mediumText]}>Submitter Ethnicity: {ethnicity}</Text>
-                    <Text style={[styles.text, styles.mediumText]}>Submitter Place of Origin: {placeOfOrigin}</Text>
-                    <Text style={[styles.text, styles.mediumText]}>Submitter Place of Residence: {placeOfResidence}</Text>
-                <FancyButton 
-                    displayText = "Go Back"
-                    onPress = {navigation.goBack}
-                />
-                </View> 
-            </SafeAreaView>
-        </View>
+      // CREDIT: outer 3 wrappers informed by ChatGPT response to message:
+      //  "write a functional react native component the encodes a screen that will be able to scroll if there is enough content on it and is a safeAreaView. style it using the react Stylesheet library"
+      // Modified to meet content needs.
+      <SafeAreaView style={styles.page}>
+        <ScrollView>
+          <View style={styles.content}>
+            <Text style={[styles.text, styles.bigText]}>Image Page</Text>
+            <Image source = {url} style={styles.image}/>
+            <Text style={[styles.text, styles.mediumText]}>Date: {date}</Text>
+            <Text style={[styles.text, styles.mediumText]}>Submitter Age Range: {age}</Text>
+            <Text style={[styles.text, styles.mediumText]}>Submitter Gender Identity: {gender}</Text>
+            <Text style={[styles.text, styles.mediumText]}>Submitter Ethnicity: {ethnicity}</Text>
+            <Text style={[styles.text, styles.mediumText]}>Submitter Place of Origin: {placeOfOrigin}</Text>
+            <Text style={[styles.text, styles.mediumText]}>Submitter Place of Residence: {placeOfResidence}</Text>
+            <FancyButton 
+                displayText = "Go Back"
+                onPress = {navigation.goBack}
+            />
+          </View> 
+        </ScrollView>
+      </SafeAreaView>
     )
 }
 
