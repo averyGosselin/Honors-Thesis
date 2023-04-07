@@ -15,10 +15,12 @@ export default function GridImage(props) {
             props.navigation.navigate('ImageScreen',
              {
               url: props.submission.inAppUrl,
+              imageRationale: props.submission.imageRationale,
               age: props.submission.ageRange,
               gender: props.submission.genderIdentity,
               ethnicity: props.submission.ethnicBackground,
               placeOfOrigin: props.submission.residence,
+              educationBackground: props.submission.educationBackground
              }
             )
           }>
