@@ -1,16 +1,19 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { Text, View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import ImageScreen from './ImageScreen';
 import Grid from '../components/Grid';
-import { data } from '../assets/natureData';
+// import { data } from '../assets/natureData';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import firebase from "firebase/compat/app"
+import "firebase/compat/database"
 
 const Stack = createNativeStackNavigator();
 
-export default function ExploreScreen({navigation}) {
+export default function ExploreScreen({route, navigation}) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -24,6 +27,27 @@ export default function ExploreScreen({navigation}) {
 }
 
 const GridScreen = ( {navigation} ) => {
+  const [firebaseData, setFirebaseData] = useState(null) 
+  useEffect(
+		() => {
+			firebase
+			.database()
+			.ref( "newTestSet" )
+			.on(
+				"value",
+				( snapshot ) => {
+          console.log(snapshot)
+					setFirebaseData( snapshot.toJSON() );
+				}
+			);
+		},[]
+	);
+
+  const data = []
+  for ( var id in firebaseData ) {
+		data.push( firebaseData[id] );
+	}
+
   return (
     // CREDIT: informed by ChatGPT response to message:
     //  "write a functional react native component the encodes a screen that will be able to scroll if there is enough content on it and is a safeAreaView. style it using the react Stylesheet library"

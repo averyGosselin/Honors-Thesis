@@ -14,7 +14,7 @@ export default function GridImage(props) {
         <TouchableOpacity onPress={() => 
             props.navigation.navigate('ImageScreen',
              {
-              url: props.submission.inAppUrl,
+              downloadUrl: props.submission.downloadUrl,
               age: props.submission.ageRange,
               gender: props.submission.genderIdentity,
               ethnicity: props.submission.ethnicBackground,
@@ -22,7 +22,8 @@ export default function GridImage(props) {
              }
             )
           }>
-            <ImageBackground source = {props.submission.inAppUrl} onLoadEnd={hideLoading}>
+
+            <ImageBackground source = {{uri: props.submission.downloadUrl}} onLoadEnd={hideLoading}>
               <View style={styles.box}>
                 <Spinner 
                   size='large' 
