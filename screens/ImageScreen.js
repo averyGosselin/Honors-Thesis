@@ -6,7 +6,7 @@ export default function ImageScreen({route, navigation}) {
 
     console.log(route.params)
     const routeData = route.params;
-    const url = routeData.url
+    const downloadUrl = routeData.downloadUrl
     const date = routeData.date
     const age = routeData.age
     const gender = routeData.gender
@@ -22,7 +22,7 @@ export default function ImageScreen({route, navigation}) {
         <ScrollView>
           <View style={styles.content}>
             <Text style={[styles.text, styles.bigText]}>Image Page</Text>
-            <Image source = {url} style={styles.image}/>
+            <Image source = {{uri: downloadUrl}} style={styles.image}/>
             <Text style={[styles.text, styles.mediumText]}>Date: {date}</Text>
             <Text style={[styles.text, styles.mediumText]}>Submitter Age Range: {age}</Text>
             <Text style={[styles.text, styles.mediumText]}>Submitter Gender Identity: {gender}</Text>

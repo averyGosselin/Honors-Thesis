@@ -13,7 +13,7 @@ import "firebase/compat/database"
 
 const Stack = createNativeStackNavigator();
 
-export default function ExploreScreen({navigation}) {
+export default function ExploreScreen({route, navigation}) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -32,7 +32,7 @@ const GridScreen = ( {navigation} ) => {
 		() => {
 			firebase
 			.database()
-			.ref( "data" )
+			.ref( "newTestSet" )
 			.on(
 				"value",
 				( snapshot ) => {
