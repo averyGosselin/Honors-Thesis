@@ -1,13 +1,16 @@
 import * as React from 'react';
-import { Text, View, SafeAreaView, StyleSheet, Image, ScrollView } from 'react-native';
+import { Text, View, SafeAreaView, StyleSheet, Image, ScrollView, ImageBackground } from 'react-native';
 import FancyButton from '../components/FancyButton';
+import Spinner from '../components/Spinner';
+import { useState } from 'react'
+
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function ImageScreen({route, navigation}) {
 
-    console.log(route.params)
     const routeData = route.params;
     const downloadUrl = routeData.downloadUrl
-    const date = routeData.date
+    const imageRationale = routeData.imageRationale
     const age = routeData.age
     const gender = routeData.gender
     const ethnicity = routeData.ethnicity
@@ -22,13 +25,29 @@ export default function ImageScreen({route, navigation}) {
         <ScrollView>
           <View style={styles.content}>
             <Text style={[styles.text, styles.bigText]}>Image Page</Text>
-            <Image source = {{uri: downloadUrl}} style={styles.image}/>
-            <Text style={[styles.text, styles.mediumText]}>Date: {date}</Text>
-            <Text style={[styles.text, styles.mediumText]}>Submitter Age Range: {age}</Text>
-            <Text style={[styles.text, styles.mediumText]}>Submitter Gender Identity: {gender}</Text>
-            <Text style={[styles.text, styles.mediumText]}>Submitter Ethnicity: {ethnicity}</Text>
-            <Text style={[styles.text, styles.mediumText]}>Submitter Place of Origin: {placeOfOrigin}</Text>
-            <Text style={[styles.text, styles.mediumText]}>Submitter Place of Residence: {placeOfResidence}</Text>
+
+            <View style={styles.imageArea}>
+              <ImageBackground source={url} onLoadEnd={hideLoading}>
+                <View style={styles.imageArea}>
+                  <Spinner size='large' color='#809848' animating={isLoading}/>
+                </View>
+              </ImageBackground>
+            </View>
+
+            <View style={styles.card}>
+              <Text style={[styles.text, styles.smallText, styles.leftText, styles.paddingTop]}>{imageRationale}</Text>
+              
+              <View style={styles.divider}></View>
+
+              <Text style={[styles.text, styles.mediumText]}>Submitter Data</Text>
+
+              <ImageAttribute attribute={"Age Range"} value={age}/>
+              <ImageAttribute attribute={"Gender Identity"} value={gender}/>
+              <ImageAttribute attribute={"Ethnicity"} value={ethnicity}/>
+              <ImageAttribute attribute={"Place of Origin"} value={placeOfOrigin}/>
+              <ImageAttribute attribute={"Education Background"} value={educationBackground}/>
+            </View>
+            
             <FancyButton 
                 displayText = "Go Back"
                 onPress = {navigation.goBack}
@@ -37,6 +56,15 @@ export default function ImageScreen({route, navigation}) {
         </ScrollView>
       </SafeAreaView>
     )
+}
+
+const ImageAttribute = ({attribute, value}) => {
+  return (
+    <View style={styles.imageAttribute}>
+      <Text style={[styles.text, styles.smallText, styles.boldText]}>{attribute}</Text>
+      <Text style={[styles.text, styles.smallText]}>{value}</Text>
+    </View>
+  )
 }
 
 //Theme constants
@@ -54,17 +82,59 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
   },
+  divider: {
+    height: '.5%',
+    borderRadius: 5,
+    margin: 10,
+    backgroundColor: "grey"
+  },
+  card: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: '90%'
+  },
+  imageAttribute: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  imageArea: {
+    width: "90%",
+    height: 300,
+    justifyContent: 'center'
+  },
   image: {
-    width: "70%",
-    height: "50%"
+    width: "100%",
+    height: "100%",
+    justifyContent: 'center'
+  },
+  paddingTop: {
+    marginTop: 10
   },
   text: {
     fontFamily: 'Avenir-Roman',
     textAlign: 'center',
+    marginRight: 10,
+    marginLeft: 10
+  },
+  boldText: {
+    fontWeight: 'bold'
+  },
+  leftText: {
+    textAlign: 'left'
   },
   bigText: {
     fontSize: 30,
-    fontWeight: 'bold',
     padding: '5%'
   },
   mediumText: {
