@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { Text, View, StyleSheet, SafeAreaView, ScrollView, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, SafeAreaView, ScrollView, TextInput, Keyboard } from 'react-native';
 
-// import SelectDropdown from 'react-native-select-dropdown'
-// import Ionicons from 'react-native-vector-icons/Ionicons';
 import FancyButton from '../components/FancyButton';
 
 import firebase from "firebase/compat/app"
@@ -63,7 +61,7 @@ import MySelectDropdown from '../components/MySelectDropdown';
   ]
 
 
-export default function ContributeScreen({route, navigation, image, uploading, ageRange, genderIdentity, ethnicBackground, residence, educationLevel, setImage, setUploading, setAgeRange, setGenderIdentity, setEthnicBackground, setResidence, setEducationLevel}) {
+export default function ContributeScreen({route, navigation, image, uploading, imageRationale, ageRange, genderIdentity, ethnicBackground, residence, educationLevel, setImage, setUploading, setImageRationale, setAgeRange, setGenderIdentity, setEthnicBackground, setResidence, setEducationLevel}) {
 
   //Function to push data recorded in the form to firebase realtime db (json) and storage (images)
   const pushRecord = async () => {
@@ -78,6 +76,7 @@ export default function ContributeScreen({route, navigation, image, uploading, a
       if (downloadUrl != null) {
         firebase.database().ref("newTestSet").push(
           {
+            imageRationale,
             ageRange,
             genderIdentity,
             ethnicBackground,
@@ -105,6 +104,7 @@ export default function ContributeScreen({route, navigation, image, uploading, a
         // setEthnicBackground(null)
         // setResidence(null)
         // setEducationLevel(null)
+        setImageRationale(null)
       } else {
         alert("An error occurred while trying to upload your image, please try again later!")
       }
@@ -152,7 +152,10 @@ export default function ContributeScreen({route, navigation, image, uploading, a
       // CREDIT: outer 3 wrappers informed by ChatGPT response to message:
       //  "write a functional react native component the encodes a screen that will be able to scroll if there is enough content on it and is a safeAreaView. style it using the react Stylesheet library"
       // Modified to meet content needs.
-      <SafeAreaView style={styles.page}>
+      <SafeAreaView 
+        style={styles.page}
+        onPress={Keyboard.dismiss}
+      >
         <ScrollView>
           <View style={styles.content}>
             <Text style={[styles.text, styles.bigText]}>Submit an Image</Text>
@@ -165,6 +168,12 @@ export default function ContributeScreen({route, navigation, image, uploading, a
               />
               <Text style={[styles.text, styles.smallText]}>Please fill out the following fields before submitting:</Text>
 
+              <InputField 
+                placeholder = "Please describe why you chose this image"
+                changeValue = {imageRationale}
+                changeFunction = {setImageRationale}
+                secureTextEntry = {false}
+              />
               <View style={styles.selectionArea}>
                 <MySelectDropdown options={ageRangeOptions} defaultText="Age Range" onSelect={setAgeRange}/>
                 <MySelectDropdown options={genderOptions} defaultText="Gender Category" onSelect={setGenderIdentity}/>
@@ -181,6 +190,22 @@ export default function ContributeScreen({route, navigation, image, uploading, a
           </View>
         </ScrollView>
       </SafeAreaView>
+  )
+}
+
+function InputField(props) {
+  return (
+    <TextInput
+      secureTextEntry={props.secureTextEntry}
+      multiline
+      style = {styles.input}
+      placeholder = {props.placeholder}
+      value = { props.changeValue }
+      onChangeText = { newVal => props.changeFunction(newVal) }
+      onSubmitEditing={ Keyboard.dismiss }
+      maxLength={250}
+      textAlign='left'
+    />
   )
 }
 
@@ -204,6 +229,14 @@ const styles = StyleSheet.create({
     width: '90%',
     justifyContent: 'space-between',
     alignItems: 'center'
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 8,
+    width: '75%',
+    height: 50,
+    padding: '2%',
+    margin: '2%'
   },
   text: {
     fontFamily: 'Avenir-Roman',
@@ -230,34 +263,3 @@ const styles = StyleSheet.create({
     justifyContent: "space-around"
   }
 });
-
-
-
-// function MySelectDropdown(props) {
-
-//   return (
-//     <SelectDropdown
-//       data={props.options}
-//       defaultButtonText={props.defaultText}
-//       buttonStyle={styles.dropdown1BtnStyle}
-//       buttonTextStyle={styles.dropdown1BtnTxtStyle}
-//       rowStyle={styles.dropdown1RowStyle}
-//       dropdownIconPosition = {"right"}
-
-//       renderDropdownIcon = {isOpened => {
-//         return (
-//           <Ionicons name={isOpened ? 'chevron-up-outline' : 'chevron-down-outline'} size={'30px'} color={'grey'} />
-//         )
-//       }}
-//       onSelect={(selectedItem, index) => {
-//         props.onSelect(selectedItem)
-//       }}
-//       buttonTextAfterSelection={(selectedItem, index) => {
-//         return selectedItem
-//       }}
-//       rowTextForSelection={(item, index) => {
-//         return item
-//       }}
-//       ></SelectDropdown>
-//   )
-// }

@@ -31,6 +31,7 @@ export default function App() {
   const [ image, setImage ] = useState(null)
   const [ uploading, setUploading ] = useState(false)
 
+  const [ imageRationale, setImageRationale ] = useState(null)
   const [ ageRange, setAgeRange ] = useState(null)
   const [ genderIdentity, setGenderIdentity ] = useState(null)
   const [ ethnicBackground, setEthnicBackground ] = useState(null)
@@ -78,6 +79,7 @@ export default function App() {
             <ContributeScreen
               image = {image}
               uploading = {uploading}
+              imageRationale = {imageRationale}
               ageRange = {ageRange}
               genderIdentity = {genderIdentity}
               ethnicBackground = {ethnicBackground}
@@ -86,6 +88,7 @@ export default function App() {
 
               setImage = {setImage}
               setUploading = {setUploading}
+              setImageRationale = {setImageRationale}
               setAgeRange = {setAgeRange}
               setGenderIdentity = {setGenderIdentity}
               setEthnicBackground = {setEthnicBackground}
