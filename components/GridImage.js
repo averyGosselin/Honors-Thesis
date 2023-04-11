@@ -19,8 +19,8 @@ export default function GridImage(props) {
               age: props.submission.ageRange,
               gender: props.submission.genderIdentity,
               ethnicity: props.submission.ethnicBackground,
-              placeOfOrigin: props.submission.residence,
-              educationBackground: props.submission.educationBackground
+              residence: props.submission.residence,
+              educationLevel: props.submission.educationLevel
              }
             )
           }>

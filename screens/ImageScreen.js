@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, SafeAreaView, StyleSheet, Image, ScrollView, ImageBackground } from 'react-native';
+import { Text, View, SafeAreaView, StyleSheet, Image, Dimensions, ScrollView, ImageBackground } from 'react-native';
 import FancyButton from '../components/FancyButton';
 import Spinner from '../components/Spinner';
 import { useState } from 'react'
@@ -8,14 +8,19 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function ImageScreen({route, navigation}) {
 
+    const [isLoading, setIsLoading] = useState(true)
+    const hideLoading = () => {
+        setIsLoading(false)
+    }
+
     const routeData = route.params;
     const downloadUrl = routeData.downloadUrl
     const imageRationale = routeData.imageRationale
     const age = routeData.age
     const gender = routeData.gender
     const ethnicity = routeData.ethnicity
-    const placeOfOrigin = routeData.placeOfOrigin
-    const placeOfResidence = routeData.placeOfResidence
+    const residence = routeData.residence
+    const educationLevel = routeData.educationLevel
 
     return (
       // CREDIT: outer 3 wrappers informed by ChatGPT response to message:
@@ -27,7 +32,7 @@ export default function ImageScreen({route, navigation}) {
             <Text style={[styles.text, styles.bigText]}>Image Page</Text>
 
             <View style={styles.imageArea}>
-              <ImageBackground source={url} onLoadEnd={hideLoading}>
+              <ImageBackground source={{uri: downloadUrl}} onLoadEnd={hideLoading}>
                 <View style={styles.imageArea}>
                   <Spinner size='large' color='#809848' animating={isLoading}/>
                 </View>
@@ -35,7 +40,8 @@ export default function ImageScreen({route, navigation}) {
             </View>
 
             <View style={styles.card}>
-              <Text style={[styles.text, styles.smallText, styles.leftText, styles.paddingTop]}>{imageRationale}</Text>
+              { imageRationale != null ? <Text style={[styles.text, styles.smallText, styles.leftText, styles.paddingTop]}>{imageRationale}</Text>
+                : <Text style={[styles.text, styles.smallText, styles.leftText, styles.paddingTop]}>No image description given.</Text>}
               
               <View style={styles.divider}></View>
 
@@ -44,8 +50,8 @@ export default function ImageScreen({route, navigation}) {
               <ImageAttribute attribute={"Age Range"} value={age}/>
               <ImageAttribute attribute={"Gender Identity"} value={gender}/>
               <ImageAttribute attribute={"Ethnicity"} value={ethnicity}/>
-              <ImageAttribute attribute={"Place of Origin"} value={placeOfOrigin}/>
-              <ImageAttribute attribute={"Education Background"} value={educationBackground}/>
+              <ImageAttribute attribute={"Residence"} value={residence}/>
+              <ImageAttribute attribute={"Education Level"} value={educationLevel}/>
             </View>
             
             <FancyButton 
@@ -73,6 +79,9 @@ const PLATINUM = '#CED8DF'
 const BLACK = '#000000'
 const GREEN = '#809848'
 const BLUE = '#2274A5'
+
+const WIDTH = Dimensions.get('window').width;
+const SIZE = Math.floor(WIDTH * .9);
 
 const styles = StyleSheet.create({
   page: {
@@ -102,15 +111,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: '90%'
+    width: SIZE
   },
   imageAttribute: {
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
   imageArea: {
-    width: "90%",
-    height: 300,
+    width: SIZE,
+    height: SIZE,
     justifyContent: 'center'
   },
   image: {
