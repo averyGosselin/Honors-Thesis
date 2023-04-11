@@ -33,12 +33,17 @@ export default function ImageScreen({route, navigation}) {
             </View>
 
             <View style={styles.card}>
-              <Text style={[styles.text, styles.smallText, styles.leftText]}>Image Rationale: {imageRationale}</Text>
-              <Text style={[styles.text, styles.mediumText]}>Age Range: {age}</Text>
-              <Text style={[styles.text, styles.mediumText]}>Gender Identity: {gender}</Text>
-              <Text style={[styles.text, styles.mediumText]}>Ethnicity: {ethnicity}</Text>
-              <Text style={[styles.text, styles.mediumText]}>Place of Origin: {placeOfOrigin}</Text>
-              <Text style={[styles.text, styles.mediumText]}>Education Background: {educationBackground}</Text>
+              <Text style={[styles.text, styles.smallText, styles.leftText, styles.paddingTop]}>{imageRationale}</Text>
+              
+              <View style={styles.divider}></View>
+
+              <Text style={[styles.text, styles.mediumText]}>Submitter Data</Text>
+
+              <ImageAttribute attribute={"Age Range"} value={age}/>
+              <ImageAttribute attribute={"Gender Identity"} value={gender}/>
+              <ImageAttribute attribute={"Ethnicity"} value={ethnicity}/>
+              <ImageAttribute attribute={"Place of Origin"} value={placeOfOrigin}/>
+              <ImageAttribute attribute={"Education Background"} value={educationBackground}/>
             </View>
 
             {/* <Ionicons name='ios-people' size='30px' /> */}
@@ -51,6 +56,15 @@ export default function ImageScreen({route, navigation}) {
         </ScrollView>
       </SafeAreaView>
     )
+}
+
+const ImageAttribute = ({attribute, value}) => {
+  return (
+    <View style={styles.imageAttribute}>
+      <Text style={[styles.text, styles.smallText, styles.boldText]}>{attribute}</Text>
+      <Text style={[styles.text, styles.smallText]}>{value}</Text>
+    </View>
+  )
 }
 
 //Theme constants
@@ -68,13 +82,18 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
   },
+  divider: {
+    height: '.5%',
+    borderRadius: 5,
+    margin: 10,
+    backgroundColor: "grey"
+  },
   card: {
     backgroundColor: '#fff',
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
-    padding: 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -84,6 +103,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: '90%'
+  },
+  imageAttribute: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   imageArea: {
     width: "90%",
@@ -95,16 +118,23 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: 'center'
   },
+  paddingTop: {
+    marginTop: 10
+  },
   text: {
     fontFamily: 'Avenir-Roman',
     textAlign: 'center',
+    marginRight: 10,
+    marginLeft: 10
+  },
+  boldText: {
+    fontWeight: 'bold'
   },
   leftText: {
     textAlign: 'left'
   },
   bigText: {
     fontSize: 30,
-    fontWeight: 'bold',
     padding: '5%'
   },
   mediumText: {
