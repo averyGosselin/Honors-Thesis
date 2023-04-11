@@ -8,12 +8,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function ImageScreen({route, navigation}) {
 
-    const { url, imageRationale, age, gender, ethnicity, placeOfOrigin, educationBackground } = route.params;
-    const [isLoading, setIsLoading] = useState(true)
-
-    const hideLoading = () => {
-        setIsLoading(false)
-    }
+    const routeData = route.params;
+    const downloadUrl = routeData.downloadUrl
+    const imageRationale = routeData.imageRationale
+    const age = routeData.age
+    const gender = routeData.gender
+    const ethnicity = routeData.ethnicity
+    const placeOfOrigin = routeData.placeOfOrigin
+    const placeOfResidence = routeData.placeOfResidence
 
     return (
       // CREDIT: outer 3 wrappers informed by ChatGPT response to message:
@@ -45,8 +47,6 @@ export default function ImageScreen({route, navigation}) {
               <ImageAttribute attribute={"Place of Origin"} value={placeOfOrigin}/>
               <ImageAttribute attribute={"Education Background"} value={educationBackground}/>
             </View>
-
-            {/* <Ionicons name='ios-people' size='30px' /> */}
             
             <FancyButton 
                 displayText = "Go Back"

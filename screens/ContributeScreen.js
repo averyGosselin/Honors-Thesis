@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Text, View, StyleSheet, SafeAreaView, ScrollView, Dimensions } from 'react-native';
 
-import SelectDropdown from 'react-native-select-dropdown'
-import Ionicons from 'react-native-vector-icons/Ionicons';
+// import SelectDropdown from 'react-native-select-dropdown'
+// import Ionicons from 'react-native-vector-icons/Ionicons';
 import FancyButton from '../components/FancyButton';
 
 import firebase from "firebase/compat/app"
@@ -11,37 +11,11 @@ import firebase from "firebase/compat/app"
 //Used for driving the image upload functionality
 import UploadingData from '../components/UploadingData';
 import ImageUpload from '../components/ImageUpload';
+import MySelectDropdown from '../components/MySelectDropdown';
 
-
-export default function ContributeScreen({navigation}) {
-  const [ image, setImage ] = useState(null)
-  const [ uploading, setUploading ] = useState(false)
-
-  const [ userAgeRange, setUserAgeRange ] = useState(null)
-  const [ userGender, setUserGender ] = useState(null)
-  const [ userEthnicBackground, setUserEthnicBackground ] = useState(null)
-  const [ userPlaceOfResidence, setUserPlaceOfResidence] = useState(null)
-  const [ userEducationBackground, setUserEducationBackground ] = useState(null)
-
-  const updateAgeRange = (age) => {
-    setUserAgeRange(age)
-  }
-  const updateUserGender = (gender) => {
-    setUserGender(gender)
-  }
-  const updateUserEthnicBackground = (ethncicBackground) => {
-    setUserEthnicBackground(ethncicBackground)
-  }
-  const updateUserPlaceOfResidence = (placeOfResidence) => {
-    setUserPlaceOfResidence(placeOfResidence)
-  }
-  const updateUserEducationBackground = (educationBackground) => {
-    setUserEducationBackground(educationBackground)
-  }
-  
   //TODO: move these to another file and import to clean this file up
   const PREFER_NOT_TO_SAY = "Prefer not to say"
-  const ageRanges = [
+  const ageRangeOptions = [
     "Under 18",
     "18 - 24",
     "25 - 34",
@@ -51,13 +25,13 @@ export default function ContributeScreen({navigation}) {
     "65+",
     PREFER_NOT_TO_SAY
   ]
-  const gender = [
+  const genderOptions = [
     "Male",
     "Female",
     "Other", 
     PREFER_NOT_TO_SAY
   ]
-  const ethnicBackground = [
+  const ethnicBackgroundOptions = [
     "Asian - Eastern",
     "Asian - Indian", 
     "Black",
@@ -66,7 +40,7 @@ export default function ContributeScreen({navigation}) {
     "White/Caucasian",
     PREFER_NOT_TO_SAY
   ]
-  const placeOfResidence = [
+  const placeOfResidenceOptions = [
     "Africa",
     "Caribbean/Pacific Islands",
     "Central Asia",
@@ -79,7 +53,7 @@ export default function ContributeScreen({navigation}) {
     "South East Asia",
     PREFER_NOT_TO_SAY
   ]
-  const educationBackground = [
+  const educationBackgroundOptions = [
     "Some High School",
     "High School Diploma",
     "Bachelor's Degree",
@@ -88,40 +62,52 @@ export default function ContributeScreen({navigation}) {
     PREFER_NOT_TO_SAY
   ]
 
+
+export default function ContributeScreen({route, navigation, image, uploading, ageRange, genderIdentity, ethnicBackground, residence, educationLevel, setImage, setUploading, setAgeRange, setGenderIdentity, setEthnicBackground, setResidence, setEducationLevel}) {
+
   //Function to push data recorded in the form to firebase realtime db (json) and storage (images)
-  const pushRecord = () => {
+  const pushRecord = async () => {
     //Require all fields be filled with some value 
-    if (image != null && userAgeRange != null && userGender != null && userEthnicBackground != null && userPlaceOfResidence != null && userEducationBackground != null) {
-      //pull out the image url to store in the json and be able to connect them later
-      const url = image.uri.substring(image.uri.lastIndexOf('/')+1)
-      firebase.database().ref("testPushes").push(
-        {
-          userAgeRange,
-          userGender,
-          userEthnicBackground,
-          userPlaceOfResidence,
-          userEducationBackground,
-          url
-        }
-      ).then(
-        data => {
-          //Sucess
-          //If we have successfully pushed the data, then we also push the image
-          // TODO: is there a better place to put this?
-          uploadImage()
-        }
-      ).catch(
-        error => {
-          //failure
-          alert(`There was a problem adding your record: ${error}`);
-        }
-      )
-      //reset all given data so when we come back to this screen nothing is filled out and we can fully restart
-      setUserAgeRange(null)
-      setUserGender(null)
-      setUserEthnicBackground(null)
-      setUserPlaceOfResidence(null)
-      setUserEducationBackground(null)
+    if (image != null && ageRange != null && genderIdentity != null && ethnicBackground != null &&  residence != null && educationLevel != null) {
+      //This will display the uploading screen and make this page look less weird while it uploads
+      setUploading(true)
+
+      //try to upload the image and get its download url back
+      const downloadUrl = await uploadImage()
+
+      if (downloadUrl != null) {
+        firebase.database().ref("newTestSet").push(
+          {
+            ageRange,
+            genderIdentity,
+            ethnicBackground,
+            residence,
+            educationLevel,
+            downloadUrl
+          }
+        ).then(
+          data => {
+            //Success
+            alert("Success! Your submission has been uploaded, thanks!")
+          }
+        ).catch(
+          error => {
+            //failure
+            alert(`There was a problem adding your record: ${error}`);
+          }
+        )
+        //reset all given data so when we come back to this screen nothing is filled out and we can fully restart
+        setUploading(false)
+
+        //leaving these commented out for now, will people really need them to reset?
+        // setAgeRange(null)
+        // setGenderIdentity(null)
+        // setEthnicBackground(null)
+        // setResidence(null)
+        // setEducationLevel(null)
+      } else {
+        alert("An error occurred while trying to upload your image, please try again later!")
+      }
 
     } else {
       //Some field hasnt been filled out, so we make demands!
@@ -131,24 +117,31 @@ export default function ContributeScreen({navigation}) {
 
   //function specific to pushing image to firebase storage
   const uploadImage = async () => {
-    //This will display the uploading screen and make this page look less weird while it uploads
-    setUploading(true)
-
     //need to wait for these things or weird things happen
     const response = await fetch(image.uri)
     const blob = await response.blob()
 
     const filename = image.uri.substring(image.uri.lastIndexOf('/')+1)
+    var downloadURL = null
+
+    //Push to the storage db
     var ref = firebase.storage().ref().child(filename).put(blob)
     try {
-      await ref;
-      alert("Success! Your submission has been uploaded, thanks!")
+      // await ref;
+      await ref
+      //get the url so we can use the image on other screens
+      downloadURL = firebase.storage().ref().child(filename).getDownloadURL()
+        try {
+          await downloadURL
+          setImage(null)
+          return downloadURL
+        } catch (e){
+            console.log("this error is.. " + e)
+        }
     } catch (e){
-        console.log(e)
+        console.log("error is: " + e)
     }
-    //reset so contribute page comes back up, clear of all previously submitted data
-    setUploading(false)
-    setImage(null);
+    setImage(null)
   } 
 
 
@@ -173,31 +166,11 @@ export default function ContributeScreen({navigation}) {
               <Text style={[styles.text, styles.smallText]}>Please fill out the following fields before submitting:</Text>
 
               <View style={styles.selectionArea}>
-                <MySelectDropdown 
-                  options={ageRanges}
-                  defaultText="Age Range"
-                  onSelect={updateAgeRange}
-                />
-                <MySelectDropdown 
-                  options={gender}
-                  defaultText="Gender Category"
-                  onSelect={updateUserGender}
-                />
-                <MySelectDropdown 
-                  options={ethnicBackground}
-                  defaultText="Ethnic Background"
-                  onSelect={updateUserEthnicBackground}
-                />
-                <MySelectDropdown 
-                  options={placeOfResidence}
-                  defaultText="Place of Residence"
-                  onSelect={updateUserPlaceOfResidence}
-                />
-                <MySelectDropdown 
-                  options={educationBackground}
-                  defaultText="Educational Background"
-                  onSelect={updateUserEducationBackground}
-                />
+                <MySelectDropdown options={ageRangeOptions} defaultText="Age Range" onSelect={setAgeRange}/>
+                <MySelectDropdown options={genderOptions} defaultText="Gender Category" onSelect={setGenderIdentity}/>
+                <MySelectDropdown options={ethnicBackgroundOptions} defaultText="Ethnic Background" onSelect={setEthnicBackground}/>
+                <MySelectDropdown options={placeOfResidenceOptions} defaultText="Place of Residence" onSelect={setResidence}/>
+                <MySelectDropdown options={educationBackgroundOptions} defaultText="Educational Background" onSelect={setEducationLevel}/>
               </View>
 
               <FancyButton
@@ -255,54 +228,36 @@ const styles = StyleSheet.create({
   selectionArea: {
     height: 300,
     justifyContent: "space-around"
-  },
-  dropdown1BtnStyle: {
-    width: '75%',
-    height: 50,
-    backgroundColor: PLATINUM,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "black"
-  },
-  dropdown1BtnTxtStyle: {
-    color: BLACK,
-    fontSize: 15, 
-    textAlign: 'left',
-    fontFamily: 'Avenir-Roman',
-  },
-  dropdown1RowStyle: {
-    backgroundColor: WHITE, 
-    borderBottomColor: PLATINUM,
   }
 });
 
 
 
-function MySelectDropdown(props) {
+// function MySelectDropdown(props) {
 
-  return (
-    <SelectDropdown
-      data={props.options}
-      defaultButtonText={props.defaultText}
-      buttonStyle={styles.dropdown1BtnStyle}
-      buttonTextStyle={styles.dropdown1BtnTxtStyle}
-      rowStyle={styles.dropdown1RowStyle}
-      dropdownIconPosition = {"right"}
+//   return (
+//     <SelectDropdown
+//       data={props.options}
+//       defaultButtonText={props.defaultText}
+//       buttonStyle={styles.dropdown1BtnStyle}
+//       buttonTextStyle={styles.dropdown1BtnTxtStyle}
+//       rowStyle={styles.dropdown1RowStyle}
+//       dropdownIconPosition = {"right"}
 
-      renderDropdownIcon = {isOpened => {
-        return (
-          <Ionicons name={isOpened ? 'chevron-up-outline' : 'chevron-down-outline'} size={'30px'} color={'grey'} />
-        )
-      }}
-      onSelect={(selectedItem, index) => {
-        props.onSelect(selectedItem)
-      }}
-      buttonTextAfterSelection={(selectedItem, index) => {
-        return selectedItem
-      }}
-      rowTextForSelection={(item, index) => {
-        return item
-      }}
-      ></SelectDropdown>
-  )
-}
+//       renderDropdownIcon = {isOpened => {
+//         return (
+//           <Ionicons name={isOpened ? 'chevron-up-outline' : 'chevron-down-outline'} size={'30px'} color={'grey'} />
+//         )
+//       }}
+//       onSelect={(selectedItem, index) => {
+//         props.onSelect(selectedItem)
+//       }}
+//       buttonTextAfterSelection={(selectedItem, index) => {
+//         return selectedItem
+//       }}
+//       rowTextForSelection={(item, index) => {
+//         return item
+//       }}
+//       ></SelectDropdown>
+//   )
+// }

@@ -3,6 +3,8 @@ import ExploreScreen from './screens/ExploreScreen';
 import ContributeScreen from './screens/ContributeScreen';
 import ProfileScreen from './screens/ProfileScreen';
 
+import { useState } from 'react'
+
 import firebase from "firebase/compat/app"
 import "firebase/compat/auth"
 import "firebase/compat/database"
@@ -26,6 +28,14 @@ export default function App() {
   const GREEN = '#809848'
   const BLUE = '#2274A5'
 
+  const [ image, setImage ] = useState(null)
+  const [ uploading, setUploading ] = useState(false)
+
+  const [ ageRange, setAgeRange ] = useState(null)
+  const [ genderIdentity, setGenderIdentity ] = useState(null)
+  const [ ethnicBackground, setEthnicBackground ] = useState(null)
+  const [ residence, setResidence] = useState(null)
+  const [ educationLevel, setEducationLevel ] = useState(null)
 
   return (
     <NavigationContainer>
@@ -61,9 +71,29 @@ export default function App() {
           },
         })}
       >
-        
+
         <Tab.Screen name="Explore" component={ExploreScreen} />
-        <Tab.Screen name="Contribute" component={ContributeScreen} />
+        <Tab.Screen name="Contribute"
+          children={() => 
+            <ContributeScreen
+              image = {image}
+              uploading = {uploading}
+              ageRange = {ageRange}
+              genderIdentity = {genderIdentity}
+              ethnicBackground = {ethnicBackground}
+              residence = {residence}
+              educationLevel = {educationLevel}
+
+              setImage = {setImage}
+              setUploading = {setUploading}
+              setAgeRange = {setAgeRange}
+              setGenderIdentity = {setGenderIdentity}
+              setEthnicBackground = {setEthnicBackground}
+              setResidence = {setResidence}
+              setEducationLevel = {setEducationLevel}
+            />
+          }
+        />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
     </NavigationContainer>
