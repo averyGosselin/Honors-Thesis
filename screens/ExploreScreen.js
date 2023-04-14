@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Text, View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import ImageScreen from './ImageScreen';
 import Grid from '../components/Grid';
+import FilterableGrid from '../components/FilterableGrid';
 // import { data } from '../assets/natureData';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -56,7 +57,8 @@ const GridScreen = ( {navigation} ) => {
       <ScrollView>
         <View style={styles.content}>
           <Header/>
-          <Grid data = {data} navigation = {navigation} />
+          <FilterableGrid data={data} navigation={navigation}/>
+          {/* <Grid data = {data} navigation = {navigation} /> */}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -66,18 +68,19 @@ const GridScreen = ( {navigation} ) => {
 const Header = () => {
   return (
     <View style={styles.infoArea}>
-      <View>
+      {/* <View>
         <Text style={[styles.text, styles.bigText]}>Welcome!</Text>
       </View>
-      <Text style={styles.text}>Check out some amazing user submissions addressing the theme of nature! Use the filter options below to sort the images and see if you can find any patterns in how people approach the theme, and click on their image for more info!</Text>
+      <Text style={styles.text}>Check out some amazing user submissions addressing the theme of nature! Use the filter options below to sort the images and see if you can find any patterns in how people approach the theme, and click on their image for more info!</Text> */}
 
+      <Text style={[styles.text, styles.bigText]}>Gallery Theme: Nature</Text>
       <View style={styles.card}>
         <Text style={[styles.text, styles.mediumText]}>Sort By:</Text>
-        <View style = {styles.flexRow}>
+        {/* <View style = {styles.flexRow}>
           <Text>Age</Text>
           <Text>Birthplace</Text>
           <Text>Place of residence</Text>
-        </View>
+        </View> */}
       </View>
     </View>
   )
@@ -101,16 +104,15 @@ const styles = StyleSheet.create({
   infoArea: {
     alignItems: 'center',
   },
-  card: {
-    padding: '2%'
-  },
+  // card: {
+  //   padding: '2%'
+  // },
   text: {
     fontFamily: 'Avenir-Roman',
     textAlign: 'center',
   },
   bigText: {
     fontSize: 30,
-    fontWeight: 'bold',
     padding: '5%'
   },
   mediumText: {

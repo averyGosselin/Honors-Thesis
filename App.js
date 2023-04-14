@@ -1,4 +1,5 @@
 import * as React from 'react';
+import ThemeSelectScreen from './screens/ThemeSelectScreen'
 import ExploreScreen from './screens/ExploreScreen';
 import ContributeScreen from './screens/ContributeScreen';
 import ProfileScreen from './screens/ProfileScreen';
@@ -73,7 +74,7 @@ export default function App() {
         })}
       >
 
-        <Tab.Screen name="Explore" component={ExploreScreen} />
+        <Tab.Screen name="Explore" component={ThemeSelectScreen} />
         <Tab.Screen name="Contribute"
           children={() => 
             <ContributeScreen
