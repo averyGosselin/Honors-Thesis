@@ -1,16 +1,17 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Text, View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import ImageScreen from './ImageScreen';
-import Grid from '../components/Grid';
+// import Grid from '../components/Grid';
 import FilterableGrid from '../components/FilterableGrid';
-// import { data } from '../assets/natureData';
 
-import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import firebase from "firebase/compat/app"
 import "firebase/compat/database"
+import FancyButton from '../components/FancyButton';
+
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,8 +34,8 @@ const GridScreen = ( {navigation} ) => {
 		() => {
 			firebase
 			.database()
-			.ref( "newTestSet" )
-			.on(
+			.ref( "nature2" )
+			.once(
 				"value",
 				( snapshot ) => {
           console.log(snapshot)
@@ -56,32 +57,39 @@ const GridScreen = ( {navigation} ) => {
     <SafeAreaView style={styles.page}>
       <ScrollView>
         <View style={styles.content}>
-          <Header/>
+          <Header navigation={navigation}/>
           <FilterableGrid data={data} navigation={navigation}/>
-          {/* <Grid data = {data} navigation = {navigation} /> */}
+
+          <View style={styles.card}>
+            <Text style={[styles.text, styles.small]}>Want to grow the gallery? Navigate to the contribute tab and submit your favorite image of nature!</Text>
+          </View>
+
+          <FancyButton
+            displayText={"Go Contribute!"}
+            onPress={() => navigation.navigate('Contribute')}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
   )
 }
 
-const Header = () => {
+const Header = ({navigation}) => {
   return (
     <View style={styles.infoArea}>
-      {/* <View>
-        <Text style={[styles.text, styles.bigText]}>Welcome!</Text>
+      <View style={styles.header}> 
+        <TouchableOpacity onPress = {navigation.goBack} style={styles.backButton}>
+          <Ionicons name="arrow-back" color="white" size="15px"/>
+        </TouchableOpacity>
+        <Text style={[styles.text, styles.bigText]}> 
+          Gallery Theme: Nature
+        </Text>
       </View>
-      <Text style={styles.text}>Check out some amazing user submissions addressing the theme of nature! Use the filter options below to sort the images and see if you can find any patterns in how people approach the theme, and click on their image for more info!</Text> */}
-
-      <Text style={[styles.text, styles.bigText]}>Gallery Theme: Nature</Text>
+      
       <View style={styles.card}>
         <Text style={[styles.text, styles.mediumText]}>Sort By:</Text>
-        {/* <View style = {styles.flexRow}>
-          <Text>Age</Text>
-          <Text>Birthplace</Text>
-          <Text>Place of residence</Text>
-        </View> */}
       </View>
+
     </View>
   )
 }
@@ -104,16 +112,35 @@ const styles = StyleSheet.create({
   infoArea: {
     alignItems: 'center',
   },
-  // card: {
-  //   padding: '2%'
-  // },
+  card: {
+    padding: 10
+  },
+  header: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 350,
+    flexDirection: 'row'
+  },
+  backButton: {
+    backgroundColor: GREEN,
+    padding: 10,
+    borderRadius: 8,
+    margin: 2,
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   text: {
     fontFamily: 'Avenir-Roman',
     textAlign: 'center',
   },
   bigText: {
-    fontSize: 30,
-    padding: '5%'
+    fontSize: 25,
+    paddingBottom: '5%',
+    paddingTop: '5%',
+    justifyContent: 'center',
+    width: '80%'
   },
   mediumText: {
     fontSize: 20

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { View, StyleSheet, Text,  ImageBackground, Dimensions, TouchableOpacity } from 'react-native';
-import Spinner from './Spinner';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+// import Spinner from './Spinner';
 import { useState } from 'react'
 import GridImage from './GridImage';
 
@@ -9,6 +9,7 @@ export default function FilterableGrid(props) {
     const [sorted, setSorted] = useState(false)
     const [sortedBy, setSortedBy] = useState(null)
 
+    //maps all submissions into grid images without any sorting
     function getGridImages() {
         let images = props.data.map(submission =>
           <GridImage 
@@ -19,6 +20,7 @@ export default function FilterableGrid(props) {
         return images
     }
 
+    //helper method to determine if a given array contains a search term at an index in the second dimension of the array (arr.[][index])
     function twoDSearch(arr, index, search) {
         if (arr.length == 0) {
             return -1
@@ -31,6 +33,8 @@ export default function FilterableGrid(props) {
         return -1
     }
 
+    //helper method to sort the dataset passed in props by a key provided as an argument
+    //TODO: moreeee commentsssss 
     function sortData(keyToSort) {
         let sortedData = []
 
@@ -113,6 +117,7 @@ const PLATINUM = '#CED8DF'
 const BLACK = '#000000'
 const GREEN = '#809848'
 const BLUE = '#2274A5'
+
 const styles = StyleSheet.create({
     content: {
         alignItems: 'left'
@@ -130,7 +135,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
-        // backgroundColor: 'grey',
         width: '100%',
         padding:5,
     },

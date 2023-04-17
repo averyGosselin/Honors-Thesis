@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Text, View, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
 import Spinner from '../components/Spinner';
 import ImageScreen from './ImageScreen';
 import Grid from '../components/Grid';
-// import { data } from '../assets/natureData';
 
-import { NavigationContainer } from '@react-navigation/native';
+// import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // import firebase from "firebase/compat/app"
@@ -15,7 +14,7 @@ import ExploreScreen from './ExploreScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function ThemeSelectScreen({route, navigation}) {
+export default function ThemeSelectScreen() {
 
     return (
         <Stack.Navigator
@@ -45,11 +44,11 @@ const StartScreen = ({navigation}) => {
                             imgUrl={"../assets/snack-icon.png"}
                             active={true}
                         />
-                        <ThemeCard themeName={"Test"} navigation={navigation} imgUrl={"nah"} active={false}/>
-                        <ThemeCard themeName={"Test"} navigation={navigation} imgUrl={"nah"} active={false}/>
-                        <ThemeCard themeName={"Test"} navigation={navigation} imgUrl={"nah"} active={false}/>
-                        <ThemeCard themeName={"Test"} navigation={navigation} imgUrl={"nah"} active={false}/>
-                        <ThemeCard themeName={"Test"} navigation={navigation} imgUrl={"nah"} active={false}/>
+                        <ThemeCard themeName={"Test Card"} navigation={navigation} imgUrl={"nah"} active={false}/>
+                        <ThemeCard themeName={"Test Card"} navigation={navigation} imgUrl={"nah"} active={false}/>
+                        <ThemeCard themeName={"Test Card"} navigation={navigation} imgUrl={"nah"} active={false}/>
+                        <ThemeCard themeName={"Test Card"} navigation={navigation} imgUrl={"nah"} active={false}/>
+                        <ThemeCard themeName={"Test Card"} navigation={navigation} imgUrl={"nah"} active={false}/>
 
                     </View>
                 </View>
@@ -103,8 +102,7 @@ function deactivated() {
     alert("This is a test card, and is deactivated.")
 }
 
-// const WIDTH = Dimensions.get('window').width;
-// const HEIGHT = Dimensions.get('window').height;
+
 const BOX_WIDTH = Math.floor((Dimensions.get('window').width) / 2.75);
 const BOX_HEIGHT = Math.floor((BOX_WIDTH * 1.25));
 
@@ -126,12 +124,8 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'Avenir-Roman',
   },
-  centerText: {
-    textAlign: 'center',
-  },
   bigText: {
     fontSize: 30,
-    // fontWeight: 'bold',
     padding: '5%'
   },
   mediumText: {
@@ -167,15 +161,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  inactiveThemeCard: {
-    backgroundColor: 'grey'
-  },
   imageArea: {
     height: '75%',
     justifyContent: 'center',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
-    // backgroundColor: 'grey'
   },
   themeTextArea: {
     alignItems: 'center',
