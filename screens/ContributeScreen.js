@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+// import { useState } from 'react';
 import { Text, View, StyleSheet, SafeAreaView, ScrollView, TextInput, Keyboard } from 'react-native';
 
 import FancyButton from '../components/FancyButton';
@@ -74,7 +74,7 @@ export default function ContributeScreen({route, navigation, image, uploading, i
       const downloadUrl = await uploadImage()
 
       if (downloadUrl != null) {
-        firebase.database().ref("newTestSet").push(
+        firebase.database().ref("nature2").push(
           {
             imageRationale,
             ageRange,
@@ -107,6 +107,7 @@ export default function ContributeScreen({route, navigation, image, uploading, i
         setImageRationale(null)
       } else {
         alert("An error occurred while trying to upload your image, please try again later!")
+        setUploading(false)
       }
 
     } else {
@@ -125,12 +126,12 @@ export default function ContributeScreen({route, navigation, image, uploading, i
     var downloadURL = null
 
     //Push to the storage db
-    var ref = firebase.storage().ref().child(filename).put(blob)
+    var ref = firebase.storage().ref('nature2').child(filename).put(blob)
     try {
       // await ref;
       await ref
       //get the url so we can use the image on other screens
-      downloadURL = firebase.storage().ref().child(filename).getDownloadURL()
+      downloadURL = firebase.storage().ref('nature2').child(filename).getDownloadURL()
         try {
           await downloadURL
           setImage(null)
@@ -241,12 +242,8 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'Avenir-Roman',
   },
-  centerText: {
-    textAlign: 'center',
-  },
   bigText: {
     fontSize: 30,
-    fontWeight: 'bold',
     padding: '5%'
   },
   mediumText: {
@@ -254,9 +251,6 @@ const styles = StyleSheet.create({
   },
   smallText: {
     fontSize: 15
-  },
-  flexRow: {
-    flexDirection: 'row'
   },
   selectionArea: {
     height: 300,

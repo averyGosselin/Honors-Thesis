@@ -44,8 +44,8 @@ const BOX_SIZE = Math.floor(WIDTH / 3);
 
 const styles = StyleSheet.create({
   box: {
-    borderColor: 'black',
-    borderWidth: 1,
+    // borderColor: 'grey',
+    // borderWidth: .5,
     height: BOX_SIZE,
     width: BOX_SIZE,
     justifyContent: 'center'

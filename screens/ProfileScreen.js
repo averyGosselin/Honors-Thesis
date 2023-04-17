@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   },
   bigText: {
     fontSize: 30,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     padding: '5%'
   },
   mediumText: {
